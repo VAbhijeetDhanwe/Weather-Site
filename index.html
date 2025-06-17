@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maharashtra Weather App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header h1 i {
+            color: #FFD700;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .maha-badge {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            color: #1a2a6c;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            transform: rotate(10deg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .search-container input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .search-container input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .search-container input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-container button {
+            background: linear-gradient(to right, #FF9933, #138808);
+            border: none;
+            border-radius: 50px;
+            width: 50px;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .popular-cities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        
+        .city-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .city-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .current-weather {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .location {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .date {
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .weather-icon {
+            font-size: 5rem;
+            margin: 15px 0;
+            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.2));
+        }
+        
+        .temperature {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .description {
+            font-size: 1.5rem;
+            text-transform: capitalize;
+            margin-bottom: 20px;
+        }
+        
+        .weather-details {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+        
+        .detail {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .detail i {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .forecast {
+            margin-top: 20px;
+        }
+        
+        .forecast h3 {
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .forecast-items {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .forecast-item {
+            flex: 0 0 auto;
+            width: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .forecast-item .day {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .forecast-item .forecast-icon {
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+        
+        .forecast-item .forecast-temp {
+            font-weight: bold;
+        }
+        
+        .error {
+            text-align: center;
+            color: #ff6b6b;
+            margin-top: 20px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .temperature {
+                font-size: 3rem;
+            }
+            
+            .weather-icon {
+                font-size: 4rem;
+            }
+            
+            .maha-badge {
+                top: -10px;
+                right: -10px;
+                font-size: 0.8rem;
+                padding: 5px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="maha-badge">MAHARASHTRA</div>
+        <div class="header">
+            <h1><i class="fas fa-cloud-sun"></i> Maharashtra Weather</h1>
+            <p>Real-time weather updates for cities across Maharashtra</p>
+            
+            <div class="popular-cities">
+                <button class="city-btn" data-city="Mumbai">Mumbai</button>
+                <button class="city-btn" data-city="Pune">Pune</button>
+                <button class="city-btn" data-city="Nagpur">Nagpur</button>
+                <button class="city-btn" data-city="Nashik">Nashik</button>
+                <button class="city-btn" data-city="Aurangabad">Aurangabad</button>
+            </div>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search any city in Maharashtra...">
+            <button id="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Fetching weather data...</p>
+        </div>
+        
+        <div class="error" id="error-message">
+            City not found. Please try again.
+        </div>
+        
+        <div class="current-weather">
+            <h2 class="location" id="location">Mumbai, Maharashtra</h2>
+            <p class="date" id="date">Monday, June 17, 2025</p>
+            <div class="weather-icon" id="weather-icon">
+                <i class="fas fa-sun"></i>
+            </div>
+            <div class="temperature" id="temperature">28°C</div>
+            <p class="description" id="description">Partly Cloudy</p>
+            
+            <div class="weather-details">
+                <div class="detail">
+                    <i class="fas fa-wind"></i>
+                    <span id="wind">12 km/h</span>
+                </div>
+                <div class="detail">
+                    <i class="fas fa-tint"></i>
+                    <span id="humidity">78%</span>
+                </div>
+                <div class="detail">
+                    <i class="fas fa-compress-alt"></i>
+                    <span id="pressure">1012 hPa</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="forecast">
+            <h3><i class="fas fa-calendar-alt"></i> 5-Day Forecast</h3>
+            <div class="forecast-items" id="forecast-container">
+                <!-- Forecast items will be added dynamically -->
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Made with ❤️ for Maharashtra | Real-time weather data</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const locationElement = document.getElementById('location');
+        const dateElement = document.getElementById('date');
+        const weatherIcon = document.getElementById('weather-icon');
+        const temperatureElement = document.getElementById('temperature');
+        const descriptionElement = document.getElementById('description');
+        const windElement = document.getElementById('wind');
+        const humidityElement = document.getElementById('humidity');
+        const pressureElement = document.getElementById('pressure');
+        const forecastContainer = document.getElementById('forecast-container');
+        const errorMessage = document.getElementById('error-message');
+        const loadingElement = document.querySelector('.loading');
+        const cityButtons = document.querySelectorAll('.city-btn');
+        
+        // Maharashtra cities data (for demo)
+        const mahaCities = {
+            "Mumbai": { temp: 28, desc: "Partly Cloudy", humidity: 78, wind: 12, pressure: 1012, icon: "fa-cloud-sun" },
+            "Pune": { temp: 26, desc: "Sunny", humidity: 65, wind: 10, pressure: 1010, icon: "fa-sun" },
+            "Nagpur": { temp: 32, desc: "Clear Sky", humidity: 55, wind: 8, pressure: 1008, icon: "fa-sun" },
+            "Nashik": { temp: 25, desc: "Light Rain", humidity: 82, wind: 9, pressure: 1011, icon: "fa-cloud-rain" },
+            "Aurangabad": { temp: 30, desc: "Cloudy", humidity: 70, wind: 11, pressure: 1009, icon: "fa-cloud" }
+        };
+        
+        // Forecast data for demo
+        const forecastData = [
+            { day: "Tue", temp: 29, icon: "fa-cloud-sun" },
+            { day: "Wed", temp: 27, icon: "fa-cloud-rain" },
+            { day: "Thu", temp: 26, icon: "fa-cloud-showers-heavy" },
+            { day: "Fri", temp: 28, icon: "fa-cloud-sun" },
+            { day: "Sat", temp: 30, icon: "fa-sun" }
+        ];
+        
+        // Initialize with Mumbai weather
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDate();
+            updateWeatherUI("Mumbai");
+            renderForecast();
+        });
+        
+        // Event listeners
+        searchBtn.addEventListener('click', searchWeather);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchWeather();
+        });
+        
+        // Add event listeners to city buttons
+        cityButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const city = button.getAttribute('data-city');
+                searchInput.value = city;
+                updateWeatherUI(city);
+            });
+        });
+        
+        // Update date
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateElement.textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Search weather function
+        function searchWeather() {
+            const city = searchInput.value.trim();
+            if (city) {
+                updateWeatherUI(city);
+            }
+        }
+        
+        // Update weather UI
+        function updateWeatherUI(city) {
+            // Show loading
+            loadingElement.style.display = 'block';
+            errorMessage.style.display = 'none';
+            
+            // Simulate API delay
+            setTimeout(() => {
+                if (mahaCities[city]) {
+                    const weather = mahaCities[city];
+                    
+                    locationElement.textContent = `${city}, Maharashtra`;
+                    temperatureElement.textContent = `${weather.temp}°C`;
+                    descriptionElement.textContent = weather.desc;
+                    windElement.textContent = `${weather.wind} km/h`;
+                    humidityElement.textContent = `${weather.humidity}%`;
+                    pressureElement.textContent = `${weather.pressure} hPa`;
+                    
+                    // Set weather icon
+                    weatherIcon.innerHTML = `<i class="fas ${weather.icon}"></i>`;
+                    
+                    // Update forecast
+                    renderForecast();
+                    
+                    errorMessage.style.display = 'none';
+                } else {
+                    errorMessage.style.display = 'block';
+                }
+                
+                loadingElement.style.display = 'none';
+            }, 800);
+        }
+        
+        // Render forecast
+        function renderForecast() {
+            forecastContainer.innerHTML = '';
+            
+            forecastData.forEach(day => {
+                const forecastItem = document.createElement('div');
+                forecastItem.className = 'forecast-item';
+                forecastItem.innerHTML = `
+                    <div class="day">${day.day}</div>
+                    <div class="forecast-icon"><i class="fas ${day.icon}"></i></div>
+                    <div class="forecast-temp">${day.temp}°C</div>
+                `;
+                forecastContainer.appendChild(forecastItem);
+            });
+        }
+    </script>
+</body>
+</html>
